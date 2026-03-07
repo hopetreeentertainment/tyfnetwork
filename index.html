@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TYF NETWORK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --gold:#c9a84c;--gold-light:#e8cc80;--gold-dim:#6b5820;--gold-ghost:rgba(201,168,76,0.07);
+  --bg:#050505;--surface:#0c0c0c;--surface2:#141414;
+  --border:#1c1c1c;--border2:#242424;
+  --text:#ddd8cc;--text-dim:#7a7060;
+  --red:#c0392b;--red-dim:rgba(192,57,43,.12);
+  --header-h:58px;--meta-h:108px;--ticker-h:44px;--promo-w:270px;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;overflow:hidden;}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-repeat:repeat;background-size:180px;pointer-events:none;z-index:9999;mix-blend-mode:overlay;}
+
+/* ── GATE ── */
+#gate{position:fixed;inset:0;background:var(--bg);z-index:2000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;}
+#gate.hidden{display:none;}
+.gate-logo{font-family:'Bebas Neue',cursive;font-size:60px;letter-spacing:.2em;color:var(--gold);text-shadow:0 0 60px rgba(201,168,76,.35);animation:glowpulse 3s ease infinite;}
+@keyframes glowpulse{0%,100%{text-shadow:0 0 40px rgba(201,168,76,.25);}50%{text-shadow:0 0 80px rgba(201,168,76,.5);}}
+.gate-sub{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.55em;color:var(--text-dim);text-transform:uppercase;}
+.gate-rule{width:56px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);}
+.gate-msg{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;font-style:italic;color:var(--text-dim);text-align:center;max-width:320px;line-height:1.7;}
+.btn-enter{font-family:'Bebas Neue',cursive;font-size:17px;letter-spacing:.35em;color:#000;background:var(--gold);border:none;padding:14px 52px;cursor:pointer;border-radius:1px;transition:opacity .2s,transform .2s;margin-top:8px;}
+.btn-enter:hover{opacity:.88;transform:scale(1.02);}
+
+/* ── HEADER ── */
+#header{position:fixed;top:0;left:0;right:0;height:var(--header-h);background:rgba(5,5,5,.97);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;z-index:500;backdrop-filter:blur(8px);}
+#header::after{content:'';position:absolute;bottom:-1px;left:0;width:140px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);opacity:.5;}
+.logo-wrap{display:flex;align-items:baseline;gap:10px;}
+.logo-tyf{font-family:'Bebas Neue',cursive;font-size:32px;letter-spacing:.14em;color:var(--gold);text-shadow:0 0 30px rgba(201,168,76,.25);line-height:1;}
+.logo-net{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:300;letter-spacing:.5em;color:var(--text-dim);text-transform:uppercase;}
+.header-mid{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;border:1px solid rgba(192,57,43,.4);padding:4px 13px 4px 10px;border-radius:2px;background:rgba(192,57,43,.07);}
+.live-dot{width:7px;height:7px;background:var(--red);border-radius:50%;animation:pulse-dot 1.6s ease infinite;flex-shrink:0;}
+@keyframes pulse-dot{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(192,57,43,.4);}50%{opacity:.7;box-shadow:0 0 0 5px rgba(192,57,43,0);}}
+.live-txt{font-family:'Bebas Neue',cursive;font-size:12px;letter-spacing:.3em;color:var(--red);}
+.header-right{display:flex;align-items:center;gap:14px;}
+#hclock{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text-dim);letter-spacing:.06em;}
+.btn-admin{font-family:'Bebas Neue',cursive;font-size:12px;letter-spacing:.2em;color:var(--gold-dim);background:none;border:1px solid var(--gold-dim);padding:5px 12px;cursor:pointer;border-radius:2px;transition:all .2s;}
+.btn-admin:hover{color:var(--gold);border-color:var(--gold);background:var(--gold-ghost);}
+
+/* ── STAGE ── */
+#stage{position:fixed;top:var(--header-h);left:0;right:0;bottom:0;display:flex;flex-direction:column;}
+#video-row{flex:1;display:flex;min-height:0;}
+
+/* VIDEO */
+#vreg{flex:1;position:relative;background:#000;overflow:hidden;}
+#vel{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;user-select:none;}
+#vblock{position:absolute;inset:0;z-index:10;cursor:default;}
+#vreg::after{content:'';position:absolute;bottom:0;left:0;right:0;height:90px;background:linear-gradient(to top,rgba(5,5,5,.6),transparent);pointer-events:none;z-index:5;}
+
+/* loading */
+#loading{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;z-index:100;transition:opacity 1s ease;}
+#loading.out{opacity:0;pointer-events:none;}
+.ld-logo{font-family:'Bebas Neue',cursive;font-size:44px;letter-spacing:.2em;color:var(--gold);animation:glowpulse 2s ease infinite;}
+.ld-sub{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:.5em;color:var(--text-dim);text-transform:uppercase;}
+.ld-bar{width:140px;height:1px;background:var(--border2);overflow:hidden;}
+.ld-fill{height:100%;background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:sweep 1.5s ease infinite;}
+.ld-soon{display:none;font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:var(--text-dim);text-align:center;line-height:1.7;max-width:280px;}
+.ld-soon.show{display:block;}
+@keyframes sweep{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+
+/* PREMIERE BUMPER */
+#premiere-bumper{position:absolute;inset:0;background:rgba(0,0,0,.93);z-index:80;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;}
+#premiere-bumper.show{display:flex;}
+.pb-eyebrow{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.4em;color:var(--gold);text-transform:uppercase;}
+.pb-title{font-family:'Bebas Neue',cursive;font-size:46px;letter-spacing:.1em;color:#fff;text-align:center;line-height:1.05;}
+.pb-sub{font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:var(--text-dim);}
+.pb-bar{width:60px;height:1px;background:var(--gold);opacity:.5;}
+.pb-starting{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.2em;color:var(--gold);}
+
+/* ── PROMO SIDEBAR ── */
+#promo-sidebar{width:var(--promo-w);flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.promo-header{padding:14px 16px 10px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.promo-header-title{font-family:'Bebas Neue',cursive;font-size:11px;letter-spacing:.35em;color:var(--gold);opacity:.8;}
+.promo-header-sub{font-size:9px;color:var(--text-dim);font-family:'Share Tech Mono',monospace;letter-spacing:.15em;margin-top:2px;text-transform:uppercase;}
+#promo-cards{flex:1;overflow-y:auto;scrollbar-width:none;padding:10px 12px;display:flex;flex-direction:column;gap:10px;}
+#promo-cards::-webkit-scrollbar{display:none;}
+.promo-card{background:#0d0d0d;border:1px solid var(--border2);border-radius:2px;padding:13px 13px 11px;position:relative;overflow:hidden;}
+.promo-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),transparent);opacity:.4;}
+.promo-card.is-film::before{background:linear-gradient(90deg,#8b5cf6,transparent);}
+.promo-card.live-now{border-color:var(--red);animation:card-pulse 2s ease infinite;}
+@keyframes card-pulse{0%,100%{border-color:rgba(192,57,43,.5);}50%{border-color:rgba(192,57,43,1);}}
+.promo-card.live-now::before{background:linear-gradient(90deg,var(--red),transparent);}
+.pc-eyebrow{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;}
+.pc-type{font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:.25em;color:var(--gold-dim);text-transform:uppercase;}
+.pc-type.film{color:#8b5cf6;}
+.pc-live-badge{font-family:'Bebas Neue',cursive;font-size:9px;letter-spacing:.2em;color:var(--red);background:var(--red-dim);border:1px solid rgba(192,57,43,.3);padding:1px 6px;border-radius:1px;animation:blink-badge 1.4s ease infinite;}
+@keyframes blink-badge{0%,100%{opacity:1;}50%{opacity:.4;}}
+.pc-title{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:5px;}
+.pc-desc{font-size:10px;color:var(--text-dim);line-height:1.5;font-weight:300;margin-bottom:9px;}
+.pc-when{display:flex;align-items:baseline;gap:7px;margin-bottom:6px;}
+.pc-date{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.05em;}
+.pc-countdown{font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:.08em;color:var(--gold);line-height:1;}
+.pc-countdown.urgent{color:var(--red);}
+.pc-rule{height:1px;background:var(--border);margin:8px 0;}
+.pc-footer{display:flex;align-items:center;justify-content:space-between;}
+.pc-after{font-size:9px;color:var(--text-dim);font-family:'Share Tech Mono',monospace;letter-spacing:.08em;}
+.pc-after span{color:var(--gold-dim);}
+.promo-empty{padding:24px 16px;text-align:center;}
+.promo-empty-txt{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:var(--text-dim);line-height:1.6;}
+
+/* ── META BAR ── */
+#meta{height:var(--meta-h);background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:stretch;flex-shrink:0;position:relative;box-shadow:0 4px 18px rgba(0,0,0,.7);z-index:2;}
+#meta::before{content:'';position:absolute;top:-1px;left:0;width:100px;height:1px;background:var(--gold);opacity:.55;}
+.meta-year{width:110px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-right:1px solid var(--border);}
+#m-year{font-family:'Bebas Neue',cursive;font-size:42px;letter-spacing:.04em;color:var(--gold);opacity:.5;line-height:1;}
+.meta-main{flex:1;padding:15px 22px;display:flex;flex-direction:column;justify-content:center;gap:5px;border-right:1px solid var(--border);min-width:0;}
+.meta-eye{display:flex;align-items:center;gap:10px;}
+.tag-type{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.28em;color:var(--gold-dim);text-transform:uppercase;border:1px solid var(--gold-dim);padding:2px 7px;border-radius:1px;}
+.tag-new{font-family:'Bebas Neue',cursive;font-size:10px;letter-spacing:.2em;color:#000;background:var(--gold);padding:2px 8px;border-radius:1px;display:none;}
+.tag-new.on{display:block;}
+.tag-premiere{font-family:'Bebas Neue',cursive;font-size:10px;letter-spacing:.2em;color:#fff;background:var(--red);padding:2px 8px;border-radius:1px;display:none;}
+.tag-premiere.on{display:block;}
+#m-title{font-family:'Barlow Condensed',sans-serif;font-size:21px;font-weight:600;color:#fff;letter-spacing:.02em;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#m-desc{font-size:12px;color:var(--text-dim);font-weight:300;line-height:1.5;max-width:580px;}
+
+/* ── TIP SECTION ── */
+.meta-tip{width:130px;flex-shrink:0;border-right:1px solid var(--gold-dim);background:var(--gold);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:0 14px;transition:background .2s;position:relative;}
+.meta-tip:hover{background:var(--gold-light);}
+.meta-tip::after{content:'';position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);pointer-events:none;}
+.tip-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:.18em;color:rgba(0,0,0,.6);text-transform:uppercase;text-align:center;line-height:1.4;}
+.tip-heart{font-size:18px;color:#000;opacity:.75;line-height:1;}
+.tip-cta{font-family:'Bebas Neue',cursive;font-size:14px;letter-spacing:.22em;color:#000;line-height:1;}
+
+/* ── UP NEXT ── */
+.meta-next{width:210px;flex-shrink:0;padding:14px 18px;display:flex;flex-direction:column;justify-content:center;gap:4px;}
+.next-lbl{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.28em;color:var(--text-dim);text-transform:uppercase;}
+#m-next-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;color:var(--text);line-height:1.3;}
+#m-next-type{font-size:9px;color:var(--text-dim);font-family:'Share Tech Mono',monospace;letter-spacing:.1em;}
+.prog-wrap{position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--border);}
+#prog{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));width:0%;transition:width 1s linear;}
+
+/* ── TICKER ── */
+#ticker{height:var(--ticker-h);background:#000;border-top:1px solid var(--border);display:flex;align-items:center;overflow:hidden;flex-shrink:0;box-shadow:inset 0 6px 12px rgba(0,0,0,.6);}
+.tick-lbl{flex-shrink:0;background:var(--gold);color:#000;font-family:'Bebas Neue',cursive;font-size:13px;letter-spacing:.25em;padding:0 18px;height:100%;display:flex;align-items:center;white-space:nowrap;}
+.tick-area{flex:1;overflow:hidden;height:100%;display:flex;align-items:center;}
+#tick-inner{display:flex;align-items:center;white-space:nowrap;will-change:transform;}
+.tick-item{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--text);padding:0 28px;display:inline-flex;align-items:center;gap:12px;}
+.tick-dot{color:var(--gold);font-size:9px;opacity:.5;}
+
+/* ══════════════════════════════════════
+   TIP MODAL
+══════════════════════════════════════ */
+#tip-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:10000;display:none;align-items:center;justify-content:center;padding:20px;}
+#tip-modal.open{display:flex;}
+.tip-panel{background:var(--surface);border:1px solid var(--border2);width:min(420px,100%);box-shadow:0 30px 80px rgba(0,0,0,.9);}
+.tip-panel-head{padding:20px 22px 16px;border-bottom:1px solid var(--border);}
+.tip-panel-title{font-family:'Bebas Neue',cursive;font-size:22px;letter-spacing:.2em;color:var(--gold);}
+.tip-panel-sub{font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;color:var(--text-dim);margin-top:4px;line-height:1.5;}
+.tip-options{padding:16px 22px;display:flex;flex-direction:column;gap:8px;}
+.tip-btn{display:flex;align-items:center;gap:14px;padding:12px 16px;border:1px solid var(--border2);background:#0a0a0a;cursor:pointer;text-decoration:none;border-radius:2px;transition:all .2s;}
+.tip-btn:hover{border-color:var(--gold-dim);background:var(--gold-ghost);}
+.tip-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-weight:700;font-family:'Barlow Condensed',sans-serif;}
+.tip-icon.paypal{background:#003087;color:#009cde;}
+.tip-icon.venmo{background:#008cff;color:#fff;}
+.tip-icon.cashapp{background:#00d64f;color:#000;}
+.tip-icon.stripe{background:#6772e5;color:#fff;}
+.tip-info{}
+.tip-name{font-family:'Bebas Neue',cursive;font-size:16px;letter-spacing:.15em;color:var(--text);}
+.tip-handle{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);margin-top:1px;letter-spacing:.08em;}
+.tip-close-row{padding:12px 22px;border-top:1px solid var(--border);text-align:right;}
+.tip-close{background:none;border:1px solid var(--border2);color:var(--text-dim);padding:6px 16px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.15em;cursor:pointer;border-radius:2px;transition:all .15s;}
+.tip-close:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ══════════════════════════════════════
+   ADMIN LOGIN OVERLAY
+══════════════════════════════════════ */
+#login-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(10px);z-index:8500;display:none;align-items:center;justify-content:center;}
+#login-overlay.open{display:flex;}
+.login-box{background:var(--surface);border:1px solid var(--border2);width:min(360px,96vw);box-shadow:0 30px 80px rgba(0,0,0,.9);}
+.login-head{padding:22px 24px 16px;border-bottom:1px solid var(--border);text-align:center;}
+.login-logo{font-family:'Bebas Neue',cursive;font-size:24px;letter-spacing:.2em;color:var(--gold);}
+.login-sub{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.25em;color:var(--text-dim);margin-top:4px;text-transform:uppercase;}
+.login-body{padding:22px 24px;}
+.login-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.login-field label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.2em;color:var(--text-dim);text-transform:uppercase;}
+.login-field input{background:#050505;border:1px solid var(--border2);color:var(--text);padding:10px 12px;font-family:'Barlow',sans-serif;font-size:14px;border-radius:2px;outline:none;transition:border-color .15s;letter-spacing:.1em;}
+.login-field input:focus{border-color:var(--gold-dim);}
+.login-err{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--red);letter-spacing:.1em;min-height:16px;margin-bottom:6px;text-align:center;}
+.btn-login{width:100%;background:var(--gold);color:#000;border:none;padding:11px;font-family:'Bebas Neue',cursive;font-size:16px;letter-spacing:.25em;cursor:pointer;border-radius:2px;transition:opacity .15s;}
+.btn-login:hover{opacity:.88;}
+.login-cancel{display:block;text-align:center;margin-top:12px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.15em;color:var(--text-dim);cursor:pointer;transition:color .15s;text-transform:uppercase;}
+.login-cancel:hover{color:var(--gold);}
+
+/* ══════════════════════════════════════
+   ADMIN PANEL
+══════════════════════════════════════ */
+#admin-ov{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(6px);z-index:8000;display:none;align-items:center;justify-content:center;padding:20px;}
+#admin-ov.open{display:flex;}
+#apanel{background:var(--surface);border:1px solid var(--border2);width:min(1020px,100%);max-height:92vh;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.9);}
+.ap-head{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--border2);background:#080808;flex-shrink:0;}
+.ap-title{font-family:'Bebas Neue',cursive;font-size:20px;letter-spacing:.2em;color:var(--gold);}
+.ap-sub{font-size:9px;color:var(--text-dim);font-family:'Share Tech Mono',monospace;letter-spacing:.2em;margin-top:2px;}
+.ap-close{background:none;border:1px solid var(--border2);color:var(--text-dim);padding:6px 16px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.15em;cursor:pointer;border-radius:2px;transition:all .15s;}
+.ap-close:hover{border-color:var(--gold);color:var(--gold);}
+.ap-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;background:#080808;}
+.ap-tab{padding:11px 20px;font-family:'Bebas Neue',cursive;font-size:12px;letter-spacing:.2em;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;}
+.ap-tab.on{color:var(--gold);border-bottom-color:var(--gold);}
+.ap-tab.prem.on{color:#e8cc80;border-bottom-color:#e8cc80;}
+.ap-body{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+.asec{padding:20px 24px;display:none;}
+.asec.on{display:block;}
+.sec-ttl{font-family:'Bebas Neue',cursive;font-size:13px;letter-spacing:.22em;color:var(--gold);margin-bottom:12px;}
+.aform{background:#0a0a0a;border:1px solid var(--border);padding:16px;border-radius:2px;margin-bottom:22px;}
+.fg4{display:grid;grid-template-columns:2fr 1fr 90px 130px;gap:11px;margin-bottom:11px;}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin-bottom:11px;}
+.fg2{display:grid;grid-template-columns:1fr auto;gap:11px;align-items:end;}
+.fld{display:flex;flex-direction:column;gap:5px;}
+.fld label{font-size:9px;color:var(--text-dim);font-family:'Share Tech Mono',monospace;letter-spacing:.2em;text-transform:uppercase;}
+.fld input,.fld select,.fld textarea{background:#050505;border:1px solid var(--border2);color:var(--text);padding:8px 10px;font-family:'Barlow',sans-serif;font-size:13px;border-radius:2px;outline:none;transition:border-color .15s;}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--gold-dim);}
+.fld select option{background:#111;}
+.fld textarea{resize:vertical;min-height:50px;font-size:12px;}
+.fld input[type="datetime-local"]{color-scheme:dark;}
+.btn-g{background:var(--gold);color:#000;border:none;padding:9px 18px;font-family:'Bebas Neue',cursive;font-size:14px;letter-spacing:.15em;cursor:pointer;border-radius:2px;transition:opacity .15s;white-space:nowrap;align-self:end;}
+.btn-g:hover{opacity:.85;}
+.pl-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.pl-total{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.08em;}
+#pl-items{display:flex;flex-direction:column;gap:4px;}
+
+/* playlist item */
+.pi{display:flex;align-items:center;gap:11px;background:#0a0a0a;border:1px solid var(--border);padding:10px 13px;border-radius:2px;cursor:grab;transition:all .15s;}
+.pi:active{cursor:grabbing;}.pi.dragging{opacity:.3;}.pi.over{border-color:var(--gold);background:var(--gold-ghost);}.pi.isnew{border-left:2px solid var(--gold);}
+.dh{color:var(--border2);font-size:14px;user-select:none;flex-shrink:0;}
+.pi-n{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);min-width:20px;flex-shrink:0;}
+.pi-inf{flex:1;min-width:0;}
+.pi-ttl{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pi-m{display:flex;align-items:center;gap:9px;margin-top:3px;flex-wrap:wrap;}
+.pi-tp{font-size:9px;color:var(--gold-dim);letter-spacing:.18em;font-family:'Share Tech Mono',monospace;text-transform:uppercase;}
+.pi-yr{font-size:9px;color:var(--text-dim);font-family:'Share Tech Mono',monospace;}
+.pi-dr{font-size:9px;color:#3a3a3a;font-family:'Share Tech Mono',monospace;}
+.pi-nb{font-family:'Bebas Neue',cursive;font-size:9px;letter-spacing:.15em;background:var(--gold);color:#000;padding:1px 6px;border-radius:1px;}
+
+/* weight badge */
+.pi-wt{display:flex;align-items:center;gap:5px;background:#111;border:1px solid var(--border2);border-radius:2px;padding:2px 4px;}
+.wt-lbl{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);letter-spacing:.12em;white-space:nowrap;}
+.wt-val{font-family:'Bebas Neue',cursive;font-size:13px;color:var(--gold);line-height:1;min-width:14px;text-align:center;}
+.wt-btn{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:12px;padding:0 2px;line-height:1;transition:color .1s;}
+.wt-btn:hover{color:var(--gold);}
+
+.pi-acts{display:flex;gap:5px;flex-shrink:0;}
+.pb{background:none;border:1px solid var(--border2);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.1em;padding:4px 9px;cursor:pointer;border-radius:1px;transition:all .15s;text-transform:uppercase;}
+.pb:hover{border-color:var(--gold-dim);color:var(--gold);}
+.pb.del:hover{border-color:var(--red);color:var(--red);}
+
+/* rotation note */
+.rotation-note{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:.1em;padding:8px 12px;background:#0a0a0a;border:1px solid var(--border);border-radius:2px;margin-bottom:12px;line-height:1.8;}
+.rotation-note strong{color:var(--gold);}
+
+/* premieres */
+.prem-form-note{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:var(--text-dim);margin-bottom:14px;line-height:1.6;padding:10px 14px;border-left:2px solid var(--gold-dim);background:var(--gold-ghost);}
+.prem-grid{display:grid;grid-template-columns:2fr 1fr;gap:11px;margin-bottom:11px;}
+.prem-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin-bottom:11px;}
+.prem-after-row{display:flex;align-items:center;gap:16px;padding:11px 0 0;border-top:1px solid var(--border);flex-wrap:wrap;}
+.prem-after-label{font-size:10px;color:var(--text-dim);font-family:'Share Tech Mono',monospace;letter-spacing:.12em;text-transform:uppercase;}
+.radio-group{display:flex;gap:12px;}
+.radio-opt{display:flex;align-items:center;gap:7px;cursor:pointer;}
+.radio-opt input{accent-color:var(--gold);cursor:pointer;}
+.radio-opt span{font-size:12px;color:var(--text);}
+#prem-items{display:flex;flex-direction:column;gap:6px;margin-top:16px;}
+.prem-item{background:#0a0a0a;border:1px solid var(--border);border-radius:2px;padding:13px 14px;position:relative;}
+.prem-item::before{content:'';position:absolute;top:0;left:0;bottom:0;width:2px;background:linear-gradient(to bottom,#8b5cf6,var(--gold));}
+.prem-item.film-type::before{background:#8b5cf6;}
+.prem-item.mv-type::before{background:var(--gold);}
+.prem-item.aired{opacity:.5;border-style:dashed;}
+.pi-row1{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px;}
+.prem-title{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;color:#fff;}
+.prem-badges{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+.pbadge{font-family:'Bebas Neue',cursive;font-size:9px;letter-spacing:.18em;padding:2px 7px;border-radius:1px;}
+.pbadge.type{background:var(--border2);color:var(--text-dim);}
+.pbadge.film{background:rgba(139,92,246,.2);color:#a78bfa;border:1px solid rgba(139,92,246,.3);}
+.pbadge.status-upcoming{background:var(--gold-ghost);color:var(--gold);border:1px solid var(--gold-dim);}
+.pbadge.status-airing{background:var(--red-dim);color:var(--red);border:1px solid rgba(192,57,43,.3);}
+.pbadge.status-aired{background:#111;color:#444;border:1px solid #222;}
+.pi-row2{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.prem-when{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.05em;}
+.prem-after-badge{font-size:10px;color:var(--text-dim);font-family:'Share Tech Mono',monospace;}
+.prem-after-badge span{color:var(--gold-dim);}
+.prem-cd-inline{font-family:'Bebas Neue',cursive;font-size:13px;letter-spacing:.08em;color:var(--gold);}
+.prem-cd-inline.urgent{color:var(--red);}
+
+/* comments */
+#com-list{display:flex;flex-direction:column;gap:4px;margin-top:14px;}
+.ci{display:flex;align-items:center;gap:10px;background:#0a0a0a;border:1px solid var(--border);padding:10px 13px;border-radius:2px;cursor:grab;}
+.ci:active{cursor:grabbing;}.ci.dragging{opacity:.3;}.ci.over{border-color:var(--gold);}
+.ci-txt{flex:1;font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--text);}
+.ci-auth{font-size:9px;color:var(--text-dim);font-family:'Share Tech Mono',monospace;letter-spacing:.1em;min-width:90px;text-align:right;}
+
+/* settings */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.sc{background:#0a0a0a;border:1px solid var(--border);padding:15px;border-radius:2px;}
+.sc-ttl{font-family:'Bebas Neue',cursive;font-size:12px;letter-spacing:.2em;color:var(--gold);margin-bottom:10px;}
+.tr{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);}
+.tr:last-child{border-bottom:none;}
+.tr-lbl{font-size:12px;color:var(--text);}
+.tr-lbl small{display:block;font-size:10px;color:var(--text-dim);margin-top:1px;}
+.tog{width:34px;height:18px;background:var(--border2);border-radius:9px;cursor:pointer;position:relative;transition:background .2s;border:none;outline:none;flex-shrink:0;}
+.tog.on{background:var(--gold-dim);}
+.tog::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;background:#fff;border-radius:50%;transition:left .2s;}
+.tog.on::after{left:18px;}
+
+/* password change */
+.pw-change-form{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end;margin-top:14px;}
+
+/* tip links config */
+.tip-cfg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+
+/* local preview bar */
+.local-test-bar{display:flex;align-items:center;gap:12px;background:#0a0a0a;border:1px solid var(--gold-dim);border-radius:2px;padding:10px 14px;margin-bottom:18px;flex-wrap:wrap;}
+.lt-label{display:flex;align-items:center;flex-wrap:wrap;gap:6px;flex:1;min-width:200px;}
+.btn-local{font-family:'Bebas Neue',cursive;font-size:12px;letter-spacing:.2em;color:#000;background:var(--gold);padding:6px 14px;cursor:pointer;border-radius:2px;white-space:nowrap;transition:opacity .15s;flex-shrink:0;border:none;}
+.btn-local:hover{opacity:.85;}
+.btn-local-clear{background:none;border:1px solid #333;color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:.15em;padding:5px 10px;cursor:pointer;border-radius:2px;transition:all .15s;white-space:nowrap;flex-shrink:0;}
+.btn-local-clear:hover{border-color:var(--red);color:var(--red);}
+
+/* toast */
+#toast{position:fixed;bottom:52px;right:22px;background:var(--surface2);border:1px solid var(--gold-dim);padding:9px 16px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--gold);z-index:9000;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;border-radius:2px;}
+#toast.on{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- GATE -->
+<div id="gate">
+  <div class="gate-logo">TYF NETWORK</div>
+  <div class="gate-sub">Broadcasting 24 / 7</div>
+  <div class="gate-rule"></div>
+  <div class="gate-msg">You're joining the broadcast already in progress.</div>
+  <button class="btn-enter" onclick="enter()">ENTER THE NETWORK</button>
+</div>
+
+<!-- HEADER -->
+<div id="header">
+  <div class="logo-wrap">
+    <div class="logo-tyf">TYF</div>
+    <div class="logo-net">Network</div>
+  </div>
+  <div class="header-mid">
+    <div class="live-dot"></div>
+    <div class="live-txt">Broadcasting Live</div>
+  </div>
+  <div class="header-right">
+    <div id="hclock">00:00:00</div>
+    <button class="btn-admin" onclick="openLogin()">⬡ ADMIN</button>
+  </div>
+</div>
+
+<!-- STAGE -->
+<div id="stage">
+  <div id="video-row">
+
+    <!-- VIDEO -->
+    <div id="vreg">
+      <div id="loading">
+        <div class="ld-logo">TYF NETWORK</div>
+        <div class="ld-sub" id="ld-sub-txt">Joining Broadcast…</div>
+        <div class="ld-bar"><div class="ld-fill"></div></div>
+        <div class="ld-soon" id="ld-soon">The broadcast is being set up.<br>Check back soon.</div>
+      </div>
+      <div id="premiere-bumper">
+        <div class="pb-eyebrow">Now Premiering on TYF Network</div>
+        <div class="pb-bar"></div>
+        <div class="pb-title" id="bumper-title">—</div>
+        <div class="pb-sub" id="bumper-sub">—</div>
+        <div class="pb-bar"></div>
+        <div class="pb-starting" id="bumper-countdown">Starting now…</div>
+      </div>
+      <video id="vel" autoplay playsinline preload="auto"></video>
+      <div id="vblock" oncontextmenu="return false;"></div>
+    </div>
+
+    <!-- PROMO SIDEBAR -->
+    <div id="promo-sidebar">
+      <div class="promo-header">
+        <div class="promo-header-title">COMING TO TYF NETWORK</div>
+        <div class="promo-header-sub">Premieres &amp; Special Events</div>
+      </div>
+      <div id="promo-cards">
+        <div class="promo-empty"><div class="promo-empty-txt">No premieres scheduled yet.<br>Add one from the Admin panel.</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- META BAR -->
+  <div id="meta">
+    <div class="meta-year"><div id="m-year">2024</div></div>
+    <div class="meta-main">
+      <div class="meta-eye">
+        <div class="tag-type" id="m-type">MUSIC VIDEO</div>
+        <div class="tag-new" id="m-new">NOW AVAILABLE</div>
+        <div class="tag-premiere" id="m-prem">WORLD PREMIERE</div>
+      </div>
+      <div id="m-title">Loading…</div>
+      <div id="m-desc">Welcome to the TYF Network — 24 hours of music, performance, and stories.</div>
+    </div>
+
+    <!-- TIP -->
+    <div class="meta-tip" onclick="openTip()">
+      <div class="tip-heart">♡</div>
+      <div class="tip-cta">SUPPORT TYF</div>
+      <div class="tip-label">Send a tip</div>
+    </div>
+
+    <!-- UP NEXT -->
+    <div class="meta-next">
+      <div class="next-lbl">Up Next</div>
+      <div id="m-next-title">—</div>
+      <div id="m-next-type">—</div>
+    </div>
+
+    <div class="prog-wrap"><div id="prog"></div></div>
+  </div>
+
+  <!-- TICKER -->
+  <div id="ticker">
+    <div class="tick-lbl">FAN COMMENTS</div>
+    <div class="tick-area"><div id="tick-inner"></div></div>
+  </div>
+</div>
+
+<!-- ══════ TIP MODAL ══════ -->
+<div id="tip-modal" onclick="if(event.target===this)closeTip()">
+  <div class="tip-panel">
+    <div class="tip-panel-head">
+      <div class="tip-panel-title">Support TYF</div>
+      <div class="tip-panel-sub">Every tip goes directly to The Young Fables.<br>Thank you for supporting independent music.</div>
+    </div>
+    <div class="tip-options" id="tip-options">
+      <!-- rendered by JS -->
+    </div>
+    <div class="tip-close-row">
+      <button class="tip-close" onclick="closeTip()">CLOSE ✕</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ ADMIN LOGIN ══════ -->
+<div id="login-overlay">
+  <div class="login-box">
+    <div class="login-head">
+      <div class="login-logo">TYF NETWORK</div>
+      <div class="login-sub">Broadcast Control — Authorized Access Only</div>
+    </div>
+    <div class="login-body">
+      <div class="login-field">
+        <label>Admin Password</label>
+        <input type="password" id="login-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div class="login-err" id="login-err"></div>
+      <button class="btn-login" onclick="doLogin()">ENTER CONTROL ROOM</button>
+      <span class="login-cancel" onclick="closeLogin()">Cancel</span>
+      <span class="login-cancel" style="margin-top:6px;font-size:8px;opacity:.5;" onclick="resetPassword()">Reset to default password</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ ADMIN PANEL ══════ -->
+<div id="admin-ov" onclick="if(event.target===this)closeAdmin()">
+  <div id="apanel">
+    <div class="ap-head">
+      <div>
+        <div class="ap-title">TYF Network — Broadcast Control</div>
+        <div class="ap-sub">MANAGE PLAYLIST · SCHEDULE PREMIERES · CURATE COMMENTS · CONFIGURE TIPS</div>
+      </div>
+      <button class="ap-close" onclick="closeAdmin()">CLOSE ✕</button>
+    </div>
+    <div class="ap-tabs">
+      <div class="ap-tab on" onclick="tab('playlist',this)">PLAYLIST</div>
+      <div class="ap-tab prem" onclick="tab('premieres',this)">⭑ PREMIERES</div>
+      <div class="ap-tab" onclick="tab('comments',this)">FAN COMMENTS</div>
+      <div class="ap-tab" onclick="tab('tips',this)">TIP LINKS</div>
+      <div class="ap-tab" onclick="tab('settings',this)">SETTINGS</div>
+    </div>
+    <div class="ap-body">
+
+      <!-- PLAYLIST -->
+      <div class="asec on" id="tab-playlist">
+
+        <!-- LOCAL TEST PLAYER -->
+        <div class="local-test-bar">
+          <div class="lt-label">
+            <span style="color:var(--gold);font-family:'Bebas Neue',cursive;font-size:12px;letter-spacing:.2em;">⬡ LOCAL PREVIEW</span>
+            <span style="color:var(--text-dim);font-size:10px;font-family:'Share Tech Mono',monospace;letter-spacing:.1em;margin-left:10px;">Pick any video from your computer to preview it in the broadcast shell</span>
+          </div>
+          <label class="btn-local" for="local-file-pick">LOAD LOCAL FILE</label>
+          <input type="file" id="local-file-pick" accept="video/*" style="display:none;" onchange="loadLocalFile(this)">
+          <div id="local-file-name" style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.08em;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">No file selected</div>
+          <button class="btn-local-clear" id="local-clear" onclick="clearLocalFile()" style="display:none;">✕ CLEAR</button>
+        </div>
+
+        <div class="sec-ttl">ADD NEW VIDEO</div>
+        <div class="aform">
+          <div class="fg4">
+            <div class="fld"><label>Video Title</label><input id="f-ttl" placeholder="e.g. Running Water (Official Music Video)"></div>
+            <div class="fld"><label>Bunny.net URL <span style="color:var(--border2);font-size:8px;">(or use local preview above)</span></label><input id="f-url" placeholder="https://…/video.mp4"></div>
+            <div class="fld"><label>Year</label><input id="f-yr" type="number" placeholder="2024" min="2000" max="2099"></div>
+            <div class="fld"><label>Type</label>
+              <select id="f-tp"><option>Music Video</option><option>Live Performance</option><option>Interview</option><option>Feature Film</option><option>Documentary</option><option>Behind the Scenes</option><option>Lyric Video</option></select>
+            </div>
+          </div>
+          <div class="fg2">
+            <div class="fld"><label>Description (shown below video)</label><textarea id="f-desc" placeholder="Brief description for viewers…"></textarea></div>
+            <div style="display:flex;flex-direction:column;gap:9px;">
+              <div class="fld" style="flex-direction:row;align-items:center;gap:9px;">
+                <label style="white-space:nowrap;margin:0;">Duration mm:ss</label>
+                <input id="f-dur" placeholder="3:42" style="width:76px;">
+              </div>
+              <div class="fld" style="flex-direction:row;align-items:center;gap:9px;">
+                <label style="white-space:nowrap;margin:0;">Plays per loop</label>
+                <input id="f-wt" type="number" value="1" min="1" max="10" style="width:56px;" title="How many times this video appears in each loop. 1 = normal, 2 = twice as often, etc.">
+              </div>
+              <div class="fld" style="flex-direction:row;align-items:center;gap:9px;">
+                <label style="white-space:nowrap;margin:0;color:var(--gold);">Mark as NEW</label>
+                <button class="tog" id="f-new" onclick="this.classList.toggle('on')"></button>
+              </div>
+              <button class="btn-g" onclick="addVideo()">+ ADD TO BROADCAST</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="rotation-note">
+          <strong>ROTATION FREQUENCY:</strong> Each video has a "plays per loop" value. Set it to <strong>2</strong> and it plays twice as often as videos set to <strong>1</strong>. Use this to feature new releases or fan favorites more heavily in the rotation.
+        </div>
+
+        <div class="pl-meta">
+          <div class="sec-ttl" style="margin:0;">BROADCAST PLAYLIST</div>
+          <div class="pl-total" id="pl-total">0 videos · 0h 0m</div>
+        </div>
+        <div id="pl-items"></div>
+      </div>
+
+      <!-- PREMIERES -->
+      <div class="asec" id="tab-premieres">
+        <div class="prem-form-note">Schedule a world premiere for a specific date and time. Viewers will see a countdown in the sidebar. At air time, the broadcast interrupts with a full-screen bumper before playing the video. You decide what happens after.</div>
+        <div class="sec-ttl">SCHEDULE A PREMIERE</div>
+        <div class="aform">
+          <div class="prem-grid">
+            <div class="fld"><label>Title</label><input id="p-ttl" placeholder="e.g. The Young Fables: A Story — Feature Film"></div>
+            <div class="fld"><label>Type</label>
+              <select id="p-tp"><option>Music Video</option><option>Feature Film</option><option>Live Performance</option><option>Documentary</option><option>Interview</option><option>Special Event</option></select>
+            </div>
+          </div>
+          <div class="prem-grid-3">
+            <div class="fld"><label>Premiere Date &amp; Time</label><input id="p-dt" type="datetime-local"></div>
+            <div class="fld"><label>Bunny.net Video URL</label><input id="p-url" placeholder="https://…/film.mp4"></div>
+            <div class="fld"><label>Duration (mm:ss or hh:mm:ss)</label><input id="p-dur" placeholder="1:42:00"></div>
+          </div>
+          <div class="prem-grid">
+            <div class="fld"><label>Year</label><input id="p-yr" type="number" placeholder="2024" min="2000" max="2099"></div>
+            <div class="fld"><label>Short Promo Description</label><input id="p-desc" placeholder="e.g. The full story, for the first time."></div>
+          </div>
+          <div class="prem-after-row">
+            <div class="prem-after-label">After airing:</div>
+            <div class="radio-group">
+              <label class="radio-opt"><input type="radio" name="p-after" value="add" checked><span>Add to regular rotation</span></label>
+              <label class="radio-opt"><input type="radio" name="p-after" value="remove"><span>Remove after airing (one-time event)</span></label>
+            </div>
+            <button class="btn-g" style="margin-left:auto;" onclick="addPremiere()">⭑ SCHEDULE PREMIERE</button>
+          </div>
+        </div>
+        <div class="sec-ttl">SCHEDULED PREMIERES</div>
+        <div id="prem-items"><div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);padding:16px 0;">No premieres scheduled yet.</div></div>
+      </div>
+
+      <!-- COMMENTS -->
+      <div class="asec" id="tab-comments">
+        <div class="sec-ttl">ADD FAN COMMENT</div>
+        <div class="aform">
+          <div style="display:grid;grid-template-columns:1fr 160px;gap:11px;margin-bottom:11px;">
+            <div class="fld"><label>Comment</label><input id="c-txt" placeholder="e.g. This song changed my life 🙏"></div>
+            <div class="fld"><label>Fan / Handle</label><input id="c-auth" placeholder="@username"></div>
+          </div>
+          <button class="btn-g" onclick="addComment()">+ ADD COMMENT</button>
+        </div>
+        <div class="sec-ttl">TICKER COMMENTS</div>
+        <div id="com-list"></div>
+      </div>
+
+      <!-- TIP LINKS -->
+      <div class="asec" id="tab-tips">
+        <div class="prem-form-note">Set the links and handles for each payment option. These appear in the tip modal when viewers click "Send a Tip". Leave a field blank to hide that option.</div>
+        <div class="sec-ttl">PAYMENT LINKS</div>
+        <div class="aform">
+          <div class="tip-cfg">
+            <div class="fld"><label>PayPal.me link or username</label><input id="t-paypal" placeholder="paypal.me/youngfables"></div>
+            <div class="fld"><label>Venmo handle</label><input id="t-venmo" placeholder="@YoungFables"></div>
+            <div class="fld"><label>Cash App $cashtag</label><input id="t-cashapp" placeholder="$YoungFables"></div>
+            <div class="fld"><label>Stripe payment link (full URL)</label><input id="t-stripe" placeholder="https://buy.stripe.com/…"></div>
+          </div>
+          <div style="margin-top:12px;">
+            <button class="btn-g" onclick="saveTipLinks()">SAVE TIP LINKS</button>
+          </div>
+        </div>
+        <div class="rotation-note" style="margin-top:0;">
+          <strong>LIVE PREVIEW:</strong> The tip modal will show only the options you've filled in. PayPal and Venmo open their apps directly on mobile.
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="asec" id="tab-settings">
+        <div class="sg">
+          <div class="sc">
+            <div class="sc-ttl">DISPLAY OPTIONS</div>
+            <div class="tr"><div class="tr-lbl">Show "Up Next" panel<small>Preview upcoming video</small></div><button class="tog on" onclick="setSetting('upnext',this)"></button></div>
+            <div class="tr"><div class="tr-lbl">Fan comment ticker<small>Scrolling comments below video</small></div><button class="tog on" onclick="setSetting('ticker',this)"></button></div>
+            <div class="tr"><div class="tr-lbl">Premiere countdown sidebar<small>Upcoming premieres panel</small></div><button class="tog on" onclick="setSetting('promo',this)"></button></div>
+            <div class="tr"><div class="tr-lbl">Tip button<small>Support button in meta bar</small></div><button class="tog on" onclick="setSetting('tip',this)"></button></div>
+          </div>
+          <div class="sc">
+            <div class="sc-ttl">BROADCAST INFO</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim);line-height:2.2;">
+              STATUS: <span style="color:var(--gold)">LIVE</span><br>
+              VIDEOS: <span id="s-count" style="color:var(--text)">—</span><br>
+              LOOP LENGTH: <span id="s-len" style="color:var(--text)">—</span><br>
+              PREMIERES: <span id="s-prem" style="color:var(--text)">—</span><br>
+              EPOCH: <span style="color:var(--text)">JAN 1 2024</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PASSWORD CHANGE -->
+        <div class="sc" style="margin-top:14px;">
+          <div class="sc-ttl">CHANGE ADMIN PASSWORD</div>
+          <div class="pw-change-form">
+            <div class="fld"><label>Current Password</label><input type="password" id="pw-cur" placeholder="Current password"></div>
+            <div class="fld"><label>New Password</label><input type="password" id="pw-new" placeholder="New password (min 6 chars)"></div>
+            <button class="btn-g" onclick="changePassword()">SAVE</button>
+          </div>
+          <div id="pw-msg" style="font-family:'Share Tech Mono',monospace;font-size:10px;margin-top:8px;min-height:14px;letter-spacing:.1em;"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════
+   CONFIG — change MASTER_PW before deploying
+══════════════════════════════════════ */
+const MASTER_PW = 'TYF2024';
+// Always fall back to MASTER_PW if nothing stored
+let adminPassword = localStorage.getItem('tyf_admin_pw') || MASTER_PW;
+
+function doLogin(){
+  const val=document.getElementById('login-pw').value.trim();
+  // Master password always works regardless of stored password
+  if(val===MASTER_PW || val===adminPassword){
+    document.getElementById('login-err').textContent='';
+    closeLogin(); openAdmin();
+  } else {
+    document.getElementById('login-err').textContent='Incorrect password. Try again.';
+    document.getElementById('login-pw').value='';
+    document.getElementById('login-pw').focus();
+  }
+}
+
+const EPOCH = new Date('2024-01-01T00:00:00Z').getTime();
+
+/* ── TIP LINKS ── */
+let tipLinks = JSON.parse(localStorage.getItem('tyf_tips') || 'null') || {
+  paypal: 'paypal.me/youngfables',
+  venmo: '@YoungFables',
+  cashapp: '$YoungFables',
+  stripe: ''
+};
+
+/* ── PLAYLIST ── */
+const DEFAULT_PLAYLIST = [
+  {id:1,title:"THE YOUNG FABLES - Crazy",url:"https://TYFNETWORK.b-cdn.net/CRAZY_OFFICIAL_FNL1.mp4",year:2018,type:"Music Video",desc:"Director: Patryk Larney \u2022 DP: Jeremy Ryan",dur:214,weight:1,isNew:false},
+  {id:2,title:"THE YOUNG FABLES - Drive",url:"https://TYFNETWORK.b-cdn.net/DRIVE_OFFICIAL_FNL1.mp4",year:2023,type:"Music Video",desc:"Produced by: Patryk Larney",dur:197,weight:1,isNew:false},
+  {id:3,title:"THE YOUNG FABLES - Half As Good",url:"https://TYFNETWORK.b-cdn.net/HalfAsGood_OFFICIAL_FNL1.mp4",year:2018,type:"Music Video",desc:"Produced by: Patryk Larney",dur:250,weight:1,isNew:false},
+  {id:4,title:"THE YOUNG FABLES - Two",url:"https://TYFNETWORK.b-cdn.net/TWO_OFFICIAL_FNL1.mp4",year:2016,type:"Music Video",desc:"Produced by: Patryk Larney",dur:196,weight:1,isNew:false},
+];
+let playlist = JSON.parse(localStorage.getItem('tyf_playlist') || 'null') || DEFAULT_PLAYLIST;
+function savePL(){ localStorage.setItem('tyf_playlist', JSON.stringify(playlist)); }
+
+const DEFAULT_COMMENTS = [
+  {id:1,text:"This song got me through the hardest year of my life.",author:"@hollywren"},
+  {id:2,text:"The Ryman performance still gives me chills every single time.",author:"@jt_music"},
+  {id:3,text:"Been following TYF since 2016. Watching them grow has been something else.",author:"@magnolia_mae"},
+  {id:4,text:"Somewhere South is on another level. That bridge section is everything.",author:"@wayfindermusic"},
+  {id:5,text:"These guys deserve every bit of attention they're getting right now.",author:"@southernroots88"},
+];
+let comments = JSON.parse(localStorage.getItem('tyf_comments') || 'null') || DEFAULT_COMMENTS;
+let premieres = JSON.parse(localStorage.getItem('tyf_premieres') || '[]');
+function savePrem(){ localStorage.setItem('tyf_premieres', JSON.stringify(premieres)); }
+function saveCom(){ localStorage.setItem('tyf_comments', JSON.stringify(comments)); }
+let cfg={upnext:true,ticker:true,promo:true,tip:true};
+let curIdx=0,vidStart=0,progIv=null,tickX=0,tickRaf=null,nid=200;
+let dsrc=null,dtype=null,premCheckIv=null,cdIv=null,activePrem=null;
+
+/* ══════════════════════════════════════
+   WEIGHTED BROADCAST ENGINE
+══════════════════════════════════════ */
+function expandedPlaylist(){
+  // Build playlist with each video repeated by its weight
+  const exp=[];
+  playlist.forEach(v=>{ for(let i=0;i<(v.weight||1);i++) exp.push(v); });
+  return exp;
+}
+
+function totalDur(){
+  return expandedPlaylist().reduce((s,v)=>s+v.dur,0);
+}
+
+function getPos(){
+  const exp=expandedPlaylist(), tot=exp.reduce((s,v)=>s+v.dur,0);
+  if(!tot) return {idx:0,off:0,expIdx:0};
+  const el=((Date.now()-EPOCH)/1000)%tot;
+  let acc=0;
+  for(let i=0;i<exp.length;i++){
+    if(el<acc+exp[i].dur) return {video:exp[i],expIdx:i,off:el-acc,expList:exp};
+    acc+=exp[i].dur;
+  }
+  return {video:exp[0],expIdx:0,off:0,expList:exp};
+}
+
+let expList=[], expIdx=0;
+
+function loadVideo(){
+  if(!playlist.length) return;
+  const pos=getPos();
+  expList=pos.expList; expIdx=pos.expIdx;
+  const v=pos.video;
+  // find curIdx in original playlist
+  curIdx=playlist.findIndex(p=>p.id===v.id);
+  const el=document.getElementById('vel');
+  el.src=v.url; el.currentTime=pos.off;
+  el.play().then(hideLoading).catch(hideLoading);
+  vidStart=Date.now()-(pos.off*1000);
+  updateMeta(); startProg(); schedNext(v.dur-pos.off);
+}
+
+function schedNext(sec){
+  setTimeout(()=>{
+    if(activePrem) return;
+    expIdx=(expIdx+1)%expList.length;
+    const v=expList[expIdx];
+    curIdx=playlist.findIndex(p=>p.id===v.id);
+    const el=document.getElementById('vel');
+    el.src=v.url; el.currentTime=0; el.play();
+    vidStart=Date.now(); updateMeta(); startProg(); schedNext(v.dur);
+  },sec*1000);
+}
+
+function updateMeta(isPrem=false){
+  if(isPrem&&activePrem){
+    const p=activePrem;
+    document.getElementById('m-title').textContent=p.title;
+    document.getElementById('m-desc').textContent=p.desc||'';
+    document.getElementById('m-type').textContent=p.type.toUpperCase();
+    document.getElementById('m-year').textContent=p.year;
+    document.getElementById('m-new').classList.remove('on');
+    document.getElementById('m-prem').classList.add('on');
+    document.getElementById('m-next-title').textContent='Returning to broadcast…';
+    document.getElementById('m-next-type').textContent='';
+    return;
+  }
+  if(!playlist.length) return;
+  const v=playlist[curIdx]||playlist[0];
+  const nxExp=expList[(expIdx+1)%expList.length];
+  document.getElementById('m-title').textContent=v.title;
+  document.getElementById('m-desc').textContent=v.desc||'';
+  document.getElementById('m-type').textContent=v.type.toUpperCase();
+  document.getElementById('m-year').textContent=v.year;
+  document.getElementById('m-next-title').textContent=nxExp?nxExp.title:'—';
+  document.getElementById('m-next-type').textContent=nxExp?nxExp.type.toUpperCase():'—';
+  document.getElementById('m-new').classList.toggle('on',!!v.isNew);
+  document.getElementById('m-prem').classList.remove('on');
+}
+
+function startProg(){
+  if(progIv)clearInterval(progIv);
+  progIv=setInterval(()=>{
+    const v=activePrem||playlist[curIdx]; if(!v) return;
+    const dur=activePrem?activePrem.durSec:v.dur;
+    const pct=Math.min(((Date.now()-vidStart)/1000/dur)*100,100);
+    document.getElementById('prog').style.width=pct+'%';
+  },500);
+}
+
+/* ══════════════════════════════════════
+   PREMIERE ENGINE
+══════════════════════════════════════ */
+function startPremiereChecks(){
+  premCheckIv=setInterval(checkPremieres,5000);
+  checkPremieres();
+}
+
+function checkPremieres(){
+  const now=Date.now();
+  premieres.forEach(p=>{
+    if(p.status==='upcoming'&&now>=p.datetime&&now<p.datetime+(p.durSec*1000)) triggerPremiere(p);
+  });
+}
+
+function triggerPremiere(p){
+  if(activePrem)return;
+  activePrem=p; p.status='airing';
+  const bumper=document.getElementById('premiere-bumper');
+  document.getElementById('bumper-title').textContent=p.title;
+  document.getElementById('bumper-sub').textContent=p.desc||p.type;
+  bumper.classList.add('show');
+  let cd=5;
+  document.getElementById('bumper-countdown').textContent=`Starting in ${cd}…`;
+  const bIv=setInterval(()=>{
+    cd--; if(cd<=0){clearInterval(bIv);bumper.classList.remove('show');playPremiereVideo(p);}
+    else document.getElementById('bumper-countdown').textContent=`Starting in ${cd}…`;
+  },1000);
+  updateMeta(true); renderPromoCards(); renderPremiereItems();
+}
+
+function playPremiereVideo(p){
+  const el=document.getElementById('vel');
+  el.src=p.url; el.currentTime=0; el.play();
+  vidStart=Date.now(); startProg();
+  setTimeout(()=>finishPremiere(p),p.durSec*1000);
+}
+
+function finishPremiere(p){
+  p.status='aired'; activePrem=null; savePrem();
+  if(p.after==='add'&&!playlist.find(v=>v.url===p.url)){
+    playlist.push({id:nid++,title:p.title,url:p.url,year:p.year,type:p.type,desc:p.desc,dur:p.durSec,weight:1,isNew:true});
+    toast('Premiere added to broadcast rotation.');
+  }
+  loadVideo(); renderPromoCards(); renderPremiereItems(); updateInfo();
+}
+
+/* ══════════════════════════════════════
+   PROMO CARDS
+══════════════════════════════════════ */
+function renderPromoCards(){
+  const c=document.getElementById('promo-cards');
+  const upcoming=premieres.filter(p=>p.status==='upcoming'||p.status==='airing');
+  if(!upcoming.length){
+    c.innerHTML='<div class="promo-empty"><div class="promo-empty-txt">No premieres scheduled.<br>Add one from the Admin panel.</div></div>';
+    return;
+  }
+  c.innerHTML='';
+  upcoming.sort((a,b)=>a.datetime-b.datetime).forEach(p=>{
+    const isFilm=p.type==='Feature Film', isLive=p.status==='airing';
+    const card=document.createElement('div');
+    card.className='promo-card'+(isFilm?' is-film':'')+(isLive?' live-now':'');
+    card.dataset.id=p.id;
+    const dateStr=new Date(p.datetime).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+    const timeStr=new Date(p.datetime).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+    card.innerHTML=`
+      <div class="pc-eyebrow"><div class="pc-type${isFilm?' film':''}">${p.type.toUpperCase()}</div>${isLive?'<div class="pc-live-badge">ON AIR NOW</div>':''}</div>
+      <div class="pc-title">${p.title}</div>
+      <div class="pc-desc">${p.desc||''}</div>
+      <div class="pc-rule"></div>
+      <div class="pc-when"><div class="pc-date">${dateStr} · ${timeStr}</div></div>
+      <div class="pc-countdown${p.datetime-Date.now()<3600000&&!isLive?' urgent':''}" id="cd-${p.id}">${isLive?'ON AIR NOW':formatCountdown(p.datetime-Date.now())}</div>
+      <div class="pc-rule"></div>
+      <div class="pc-footer"><div class="pc-after">After: <span>${p.after==='add'?'Enters rotation':'One-time event'}</span></div></div>`;
+    c.appendChild(card);
+  });
+  if(cdIv)clearInterval(cdIv);
+  cdIv=setInterval(()=>{
+    upcoming.filter(p=>p.status==='upcoming').forEach(p=>{
+      const el=document.getElementById('cd-'+p.id); if(!el)return;
+      const diff=p.datetime-Date.now();
+      if(diff<=0){el.textContent='Starting…';el.classList.add('urgent');return;}
+      el.textContent=formatCountdown(diff); el.classList.toggle('urgent',diff<3600000);
+    });
+  },1000);
+}
+
+function formatCountdown(ms){
+  if(ms<=0)return'Now';
+  const s=Math.floor(ms/1000),d=Math.floor(s/86400),h=Math.floor((s%86400)/3600),m=Math.floor((s%3600)/60),sc=s%60;
+  if(d>0)return`${d}d ${h}h ${m}m`;
+  if(h>0)return`${h}h ${m}m ${sc}s`;
+  return`${m}m ${sc}s`;
+}
+
+/* ══════════════════════════════════════
+   TIP MODAL
+══════════════════════════════════════ */
+function openTip(){ renderTipModal(); document.getElementById('tip-modal').classList.add('open'); }
+function closeTip(){ document.getElementById('tip-modal').classList.remove('open'); }
+
+function renderTipModal(){
+  const opts=document.getElementById('tip-options'); opts.innerHTML='';
+  const items=[
+    {key:'paypal',label:'PayPal',icon:'PP',cls:'paypal',link:v=>v.startsWith('http')?v:`https://${v}`},
+    {key:'venmo',label:'Venmo',icon:'V',cls:'venmo',link:v=>`https://venmo.com/${v.replace('@','')}`},
+    {key:'cashapp',label:'Cash App',icon:'$',cls:'cashapp',link:v=>`https://cash.app/${v.startsWith('$')?v:'$'+v}`},
+    {key:'stripe',label:'Card / Stripe',icon:'♡',cls:'stripe',link:v=>v},
+  ];
+  let any=false;
+  items.forEach(item=>{
+    const val=(tipLinks[item.key]||'').trim();
+    if(!val)return; any=true;
+    const a=document.createElement('a');
+    a.className='tip-btn'; a.href=item.link(val); a.target='_blank'; a.rel='noopener';
+    a.innerHTML=`<div class="tip-icon ${item.cls}">${item.icon}</div><div class="tip-info"><div class="tip-name">${item.label}</div><div class="tip-handle">${val}</div></div>`;
+    opts.appendChild(a);
+  });
+  if(!any) opts.innerHTML='<div style="font-family:\'Cormorant Garamond\',serif;font-size:14px;font-style:italic;color:var(--text-dim);padding:8px 0;">No tip links configured yet. Add them in the Admin → Tip Links tab.</div>';
+}
+
+function saveTipLinks(){
+  tipLinks={
+    paypal:document.getElementById('t-paypal').value.trim(),
+    venmo:document.getElementById('t-venmo').value.trim(),
+    cashapp:document.getElementById('t-cashapp').value.trim(),
+    stripe:document.getElementById('t-stripe').value.trim(),
+  };
+  localStorage.setItem('tyf_tips',JSON.stringify(tipLinks));
+  toast('Tip links saved.');
+}
+
+function loadTipForm(){
+  document.getElementById('t-paypal').value=tipLinks.paypal||'';
+  document.getElementById('t-venmo').value=tipLinks.venmo||'';
+  document.getElementById('t-cashapp').value=tipLinks.cashapp||'';
+  document.getElementById('t-stripe').value=tipLinks.stripe||'';
+}
+
+/* ══════════════════════════════════════
+   ADMIN LOGIN
+══════════════════════════════════════ */
+function openLogin(){
+  document.getElementById('login-pw').value='';
+  document.getElementById('login-err').textContent='';
+  document.getElementById('login-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('login-pw').focus(),100);
+}
+
+function resetPassword(){
+  localStorage.removeItem('tyf_admin_pw');
+  adminPassword = MASTER_PW;
+  document.getElementById('login-err').textContent='';
+  document.getElementById('login-pw').value='';
+  document.getElementById('login-pw').placeholder='TYF2024';
+  document.getElementById('login-err').style.color='var(--gold)';
+  document.getElementById('login-err').textContent='Reset. Use password: TYF2024';
+}
+
+function closeLogin(){ document.getElementById('login-overlay').classList.remove('open'); }
+
+function changePassword(){
+  const cur=document.getElementById('pw-cur').value;
+  const nw=document.getElementById('pw-new').value;
+  const msg=document.getElementById('pw-msg');
+  if(cur!==adminPassword&&cur!==MASTER_PW){msg.style.color='var(--red)';msg.textContent='Current password incorrect.';return;}
+  if(nw.length<6){msg.style.color='var(--red)';msg.textContent='New password must be at least 6 characters.';return;}
+  adminPassword=nw;
+  localStorage.setItem('tyf_admin_pw',nw);
+  msg.style.color='var(--gold)';msg.textContent='Password updated successfully.';
+  document.getElementById('pw-cur').value='';
+  document.getElementById('pw-new').value='';
+  setTimeout(()=>msg.textContent='',3000);
+}
+
+/* ══════════════════════════════════════
+   ADMIN PANEL
+══════════════════════════════════════ */
+function openAdmin(){
+  document.getElementById('admin-ov').classList.add('open');
+  renderPL(); renderComments(); renderPremiereItems(); renderPromoCards(); loadTipForm(); updateInfo();
+}
+function closeAdmin(){ document.getElementById('admin-ov').classList.remove('open'); }
+function tab(name,el){
+  document.querySelectorAll('.ap-tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.asec').forEach(s=>s.classList.remove('on'));
+  el.classList.add('on'); document.getElementById('tab-'+name).classList.add('on');
+}
+
+/* PLAYLIST */
+function addVideo(){
+  const t=document.getElementById('f-ttl').value.trim(), u=document.getElementById('f-url').value.trim();
+  const y=parseInt(document.getElementById('f-yr').value)||new Date().getFullYear();
+  const tp=document.getElementById('f-tp').value, d=document.getElementById('f-desc').value.trim();
+  const ds=document.getElementById('f-dur').value.trim();
+  const wt=parseInt(document.getElementById('f-wt').value)||1;
+  const isNew=document.getElementById('f-new').classList.contains('on');
+  if(!t||!u){toast('Title and URL are required.');return;}
+  const pts=ds.split(':'), dur=pts.length===2?(parseInt(pts[0])*60+parseInt(pts[1])):(parseInt(ds)||180);
+  playlist.push({id:nid++,title:t,url:u,year:y,type:tp,desc:d,dur,weight:wt,isNew});
+  expList=expandedPlaylist(); renderPL(); updateInfo(); savePL();
+  ['f-ttl','f-url','f-dur','f-desc','f-yr'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-wt').value='1';
+  document.getElementById('f-new').classList.remove('on');
+  toast('Video added to broadcast.');
+}
+
+function renderPL(){
+  const c=document.getElementById('pl-items'); c.innerHTML='';
+  playlist.forEach((v,i)=>{
+    const d=document.createElement('div');
+    d.className='pi'+(v.isNew?' isnew':''); d.draggable=true;
+    const m=Math.floor(v.dur/60), s=String(v.dur%60).padStart(2,'0');
+    const wt=v.weight||1;
+    d.innerHTML=`<div class="dh">⠿</div><div class="pi-n">${String(i+1).padStart(2,'0')}</div>
+    <div class="pi-inf">
+      <div class="pi-ttl">${v.title}</div>
+      <div class="pi-m">
+        <span class="pi-tp">${v.type}</span><span class="pi-yr">${v.year}</span><span class="pi-dr">${m}:${s}</span>
+        ${v.isNew?'<span class="pi-nb">NOW AVAILABLE</span>':''}
+        <span class="pi-wt">
+          <button class="wt-btn" onclick="changeWeight(${i},-1)">−</button>
+          <span class="wt-lbl">×</span><span class="wt-val" id="wv-${v.id}">${wt}</span>
+          <button class="wt-btn" onclick="changeWeight(${i},1)">+</button>
+        </span>
+      </div>
+    </div>
+    <div class="pi-acts">
+      <button class="pb" onclick="toggleNew(${i})">${v.isNew?'UNMARK':'MARK NEW'}</button>
+      <button class="pb del" onclick="delVideo(${i})">REMOVE</button>
+    </div>`;
+    d.addEventListener('dragstart',()=>{dsrc=i;dtype='pl';d.classList.add('dragging');});
+    d.addEventListener('dragend',()=>d.classList.remove('dragging'));
+    d.addEventListener('dragover',e=>{e.preventDefault();d.classList.add('over');});
+    d.addEventListener('dragleave',()=>d.classList.remove('over'));
+    d.addEventListener('drop',e=>{e.preventDefault();d.classList.remove('over');
+      if(dtype!=='pl'||dsrc===null||dsrc===i)return;
+      const mv=playlist.splice(dsrc,1)[0];playlist.splice(i,0,mv);expList=expandedPlaylist();renderPL();savePL();toast('Playlist reordered.');});
+    c.appendChild(d);
+  });
+  updateInfo();
+}
+
+function changeWeight(i,delta){
+  playlist[i].weight=Math.max(1,Math.min(10,(playlist[i].weight||1)+delta));
+  const el=document.getElementById('wv-'+playlist[i].id);
+  if(el) el.textContent=playlist[i].weight;
+  expList=expandedPlaylist(); updateInfo(); savePL();
+  toast(`"${playlist[i].title.substring(0,28)}…" plays ×${playlist[i].weight} per loop.`);
+}
+
+function toggleNew(i){playlist[i].isNew=!playlist[i].isNew;renderPL();savePL();if(playlist[i].id===playlist[curIdx]?.id)updateMeta();}
+function delVideo(i){playlist.splice(i,1);expList=expandedPlaylist();renderPL();savePL();toast('Video removed.');}
+
+/* PREMIERES */
+function addPremiere(){
+  const title=document.getElementById('p-ttl').value.trim(), url=document.getElementById('p-url').value.trim();
+  const dt=document.getElementById('p-dt').value, type=document.getElementById('p-tp').value;
+  const desc=document.getElementById('p-desc').value.trim(), ds=document.getElementById('p-dur').value.trim();
+  const yr=parseInt(document.getElementById('p-yr').value)||new Date().getFullYear();
+  const after=document.querySelector('input[name="p-after"]:checked').value;
+  if(!title||!url||!dt){toast('Title, URL and date/time are required.');return;}
+  const parts=ds.split(':').map(Number);
+  let durSec=180;
+  if(parts.length===3)durSec=parts[0]*3600+parts[1]*60+parts[2];
+  else if(parts.length===2)durSec=parts[0]*60+parts[1];
+  else if(parts.length===1&&parts[0])durSec=parts[0];
+  const datetime=new Date(dt).getTime();
+  if(isNaN(datetime)){toast('Invalid date/time.');return;}
+  premieres.push({id:nid++,title,url,type,year:yr,desc,datetime,durSec,after,status:'upcoming'});
+  premieres.sort((a,b)=>a.datetime-b.datetime);
+  ['p-ttl','p-url','p-dt','p-desc','p-dur','p-yr'].forEach(id=>document.getElementById(id).value='');
+  renderPremiereItems(); renderPromoCards(); updateInfo(); savePrem(); toast('Premiere scheduled.');
+}
+
+function renderPremiereItems(){
+  const c=document.getElementById('prem-items'); c.innerHTML='';
+  if(!premieres.length){c.innerHTML='<div style="font-family:\'Share Tech Mono\',monospace;font-size:10px;color:var(--text-dim);padding:16px 0;">No premieres scheduled yet.</div>';return;}
+  [...premieres].reverse().forEach(p=>{
+    const div=document.createElement('div');
+    div.className='prem-item'+(p.type==='Feature Film'?' film-type':' mv-type')+(p.status==='aired'?' aired':'');
+    const dateStr=new Date(p.datetime).toLocaleString('en-US',{weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+    const diff=p.datetime-Date.now();
+    const cdTxt=p.status==='aired'?'Aired':(p.status==='airing'?'On Air Now':formatCountdown(diff));
+    div.innerHTML=`<div class="pi-row1"><div class="prem-title">${p.title}</div>
+    <div class="prem-badges">${p.type==='Feature Film'?'<span class="pbadge film">FILM</span>':''}<span class="pbadge type">${p.type}</span><span class="pbadge status-${p.status}">${p.status.toUpperCase()}</span></div></div>
+    <div class="pi-row2"><div class="prem-when">${dateStr}</div>
+    <div class="prem-after-badge">After: <span>${p.after==='add'?'Adds to rotation':'One-time only'}</span></div>
+    <div class="prem-cd-inline${diff<3600000&&p.status==='upcoming'?' urgent':''}">${cdTxt}</div>
+    ${p.status!=='aired'?`<div class="pi-acts"><button class="pb del" onclick="deletePremiere(${p.id})">CANCEL</button></div>`:''}</div>`;
+    c.appendChild(div);
+  });
+}
+
+function deletePremiere(id){
+  const i=premieres.findIndex(p=>p.id===id);
+  if(i>-1){premieres.splice(i,1);renderPremiereItems();renderPromoCards();savePrem();toast('Premiere cancelled.');}
+}
+
+/* COMMENTS */
+function addComment(){
+  const t=document.getElementById('c-txt').value.trim(), a=document.getElementById('c-auth').value.trim()||'@fan';
+  if(!t){toast('Comment text required.');return;}
+  comments.push({id:nid++,text:t,author:a});renderComments();buildTicker();saveCom();
+  document.getElementById('c-txt').value='';document.getElementById('c-auth').value='';
+  toast('Comment added to ticker.');
+}
+
+function renderComments(){
+  const c=document.getElementById('com-list'); c.innerHTML='';
+  comments.forEach((cm,i)=>{
+    const d=document.createElement('div'); d.className='ci'; d.draggable=true;
+    d.innerHTML=`<div class="dh">⠿</div><div class="ci-txt">${cm.text}</div><div class="ci-auth">${cm.author}</div>
+    <div class="pi-acts"><button class="pb del" onclick="delComment(${i})">REMOVE</button></div>`;
+    d.addEventListener('dragstart',()=>{dsrc=i;dtype='cm';d.classList.add('dragging');});
+    d.addEventListener('dragend',()=>d.classList.remove('dragging'));
+    d.addEventListener('dragover',e=>{e.preventDefault();d.classList.add('over');});
+    d.addEventListener('dragleave',()=>d.classList.remove('over'));
+    d.addEventListener('drop',e=>{e.preventDefault();d.classList.remove('over');
+      if(dtype!=='cm'||dsrc===i)return;
+      const mv=comments.splice(dsrc,1)[0];comments.splice(i,0,mv);renderComments();buildTicker();saveCom();});
+    c.appendChild(d);
+  });
+}
+function delComment(i){comments.splice(i,1);renderComments();buildTicker();saveCom();toast('Comment removed.');}
+
+/* SETTINGS */
+function setSetting(k,btn){
+  btn.classList.toggle('on'); cfg[k]=btn.classList.contains('on');
+  if(k==='ticker')document.getElementById('ticker').style.display=cfg.ticker?'flex':'none';
+  if(k==='upnext')document.querySelector('.meta-next').style.display=cfg.upnext?'flex':'none';
+  if(k==='promo')document.getElementById('promo-sidebar').style.display=cfg.promo?'flex':'none';
+  if(k==='tip')document.querySelector('.meta-tip').style.display=cfg.tip?'flex':'none';
+}
+
+function updateInfo(){
+  const tot=totalDur(), h=Math.floor(tot/3600), m=Math.floor((tot%3600)/60);
+  const expanded=expandedPlaylist();
+  document.getElementById('pl-total').textContent=`${playlist.length} videos (${expanded.length} slots with weights) · ${h}h ${m}m loop`;
+  document.getElementById('s-count').textContent=`${playlist.length} videos`;
+  document.getElementById('s-len').textContent=`${h}h ${m}m`;
+  document.getElementById('s-prem').textContent=`${premieres.filter(p=>p.status==='upcoming').length} upcoming`;
+}
+
+/* TICKER */
+function buildTicker(){
+  const el=document.getElementById('tick-inner');
+  if(!comments.length){el.innerHTML='';return;}
+  const all=[...comments,...comments,...comments];
+  el.innerHTML=all.map(c=>`<span class="tick-item">${c.text}<span class="tick-dot">◆</span><span style="font-size:11px;color:var(--text-dim);font-family:'Share Tech Mono',monospace;letter-spacing:.08em;">${c.author}</span></span>`).join('');
+  tickX=0;el.style.transform='translateX(0px)';animTicker();
+}
+function animTicker(){
+  if(tickRaf)cancelAnimationFrame(tickRaf);
+  const el=document.getElementById('tick-inner');
+  const third=el.scrollWidth/3;
+  function step(){tickX-=0.55;if(Math.abs(tickX)>=third)tickX=0;el.style.transform=`translateX(${tickX}px)`;tickRaf=requestAnimationFrame(step);}
+  tickRaf=requestAnimationFrame(step);
+}
+
+/* CLOCK */
+function tick(){const n=new Date(),p=x=>String(x).padStart(2,'0');document.getElementById('hclock').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;}
+setInterval(tick,1000);tick();
+
+/* LOADING */
+function hideLoading(){setTimeout(()=>document.getElementById('loading').classList.add('out'),600);}
+
+/* LOCAL FILE PREVIEW */
+let localBlobUrl = null;
+function loadLocalFile(input){
+  const file = input.files[0]; if(!file) return;
+  if(localBlobUrl) URL.revokeObjectURL(localBlobUrl);
+  localBlobUrl = URL.createObjectURL(file);
+
+  // Inject as first playlist item (temporary)
+  const existing = playlist.findIndex(v=>v.id==='__local__');
+  if(existing>-1) playlist.splice(existing,1);
+
+  // Try to get duration from the file itself
+  const tmpVid = document.createElement('video');
+  tmpVid.src = localBlobUrl;
+  tmpVid.addEventListener('loadedmetadata', ()=>{
+    const dur = Math.round(tmpVid.duration)||180;
+    const name = file.name.replace(/\.[^/.]+$/,'').replace(/[-_]/g,' ');
+    playlist.unshift({id:'__local__',title:name+' (Local Preview)',url:localBlobUrl,year:new Date().getFullYear(),type:'Music Video',desc:'Local file preview — replace with Bunny.net URL before going live.',dur,weight:1,isNew:false});
+    expList=expandedPlaylist(); curIdx=0; expIdx=0;
+    const el=document.getElementById('vel');
+    el.src=localBlobUrl; el.currentTime=0;
+    el.play().then(hideLoading).catch(hideLoading);
+    vidStart=Date.now(); updateMeta(); startProg();
+    document.getElementById('local-file-name').textContent=file.name;
+    document.getElementById('local-clear').style.display='block';
+    renderPL(); toast('Local file loaded into broadcast.');
+    closeAdmin();
+  });
+}
+
+function clearLocalFile(){
+  const i=playlist.findIndex(v=>v.id==='__local__');
+  if(i>-1) playlist.splice(i,1);
+  if(localBlobUrl){URL.revokeObjectURL(localBlobUrl);localBlobUrl=null;}
+  document.getElementById('local-file-pick').value='';
+  document.getElementById('local-file-name').textContent='No file selected';
+  document.getElementById('local-clear').style.display='none';
+  expList=expandedPlaylist(); renderPL();
+  loadVideo(); toast('Local file removed.');
+}
+
+function startLoadingFallback(){
+  setTimeout(()=>{
+    // If still showing loading screen after 5s, switch to "coming soon" state
+    const ld=document.getElementById('loading');
+    if(ld.classList.contains('out')) return; // already hidden by real video
+    document.getElementById('ld-sub-txt').style.display='none';
+    document.querySelector('.ld-bar').style.display='none';
+    document.getElementById('ld-soon').classList.add('show');
+    // Update meta bar to reflect no-video state
+    document.getElementById('m-title').textContent='Broadcast Coming Soon';
+    document.getElementById('m-desc').textContent='The TYF Network is being set up. Videos will be airing here very soon.';
+    document.getElementById('m-type').textContent='TYF NETWORK';
+    document.getElementById('m-next-title').textContent='Stay tuned';
+    document.getElementById('m-next-type').textContent='';
+  }, 5000);
+}
+
+/* GATE */
+function enter(){
+  document.getElementById('gate').classList.add('hidden');
+  expList=expandedPlaylist();
+  loadVideo();buildTicker();startPremiereChecks();renderPromoCards();startLoadingFallback();
+}
+
+/* TOAST */
+let toastTm=null;
+function toast(msg){
+  const el=document.getElementById('toast');el.textContent=msg;el.classList.add('on');
+  if(toastTm)clearTimeout(toastTm);toastTm=setTimeout(()=>el.classList.remove('on'),2400);
+}
+</script>
+</body>
+</html>
