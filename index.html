@@ -695,6 +695,10 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
         </div>
         <div class="sec-ttl">TICKER COMMENTS</div>
         <div id="com-list"></div>
+        <div style="margin-top:14px;display:flex;align-items:center;gap:12px;">
+          <button class="btn-g" id="com-save-btn" onclick="saveComments()" style="opacity:.4;pointer-events:none;">SAVE COMMENTS</button>
+          <span id="com-save-msg" style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.1em;"></span>
+        </div>
       </div>
 
       <!-- TIP LINKS -->
@@ -703,10 +707,8 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
         <div class="sec-ttl">PAYMENT LINKS</div>
         <div class="aform">
           <div class="tip-cfg">
-            <div class="fld"><label>PayPal.me link or username</label><input id="t-paypal" placeholder="paypal.me/youngfables"></div>
-            <div class="fld"><label>Venmo handle</label><input id="t-venmo" placeholder="@YoungFables"></div>
-            <div class="fld"><label>Cash App $cashtag</label><input id="t-cashapp" placeholder="$YoungFables"></div>
-            <div class="fld"><label>Stripe payment link (full URL)</label><input id="t-stripe" placeholder="https://buy.stripe.com/…"></div>
+            <div class="fld"><label>PayPal email or paypal.me link</label><input id="t-paypal" placeholder="theyoungfables@gmail.com"></div>
+            <div class="fld"><label>Venmo handle</label><input id="t-venmo" placeholder="@theyoungfables2"></div>
           </div>
           <div style="margin-top:12px;">
             <button class="btn-g" onclick="saveTipLinks()">SAVE TIP LINKS</button>
@@ -782,9 +784,9 @@ const EPOCH = new Date('2024-01-01T00:00:00Z').getTime();
 
 /* ── TIP LINKS ── */
 let tipLinks = JSON.parse(localStorage.getItem('tyf_tips') || 'null') || {
-  paypal: 'paypal.me/youngfables',
-  venmo: '@YoungFables',
-  cashapp: '$YoungFables',
+  paypal: 'theyoungfables@gmail.com',
+  venmo: '@theyoungfables2',
+  cashapp: '',
   stripe: ''
 };
 
@@ -1007,10 +1009,8 @@ function closeTip(){ document.getElementById('tip-modal').classList.remove('open
 function renderTipModal(){
   const opts=document.getElementById('tip-options'); opts.innerHTML='';
   const items=[
-    {key:'paypal',label:'PayPal',icon:'PP',cls:'paypal',link:v=>v.startsWith('http')?v:`https://${v}`},
+    {key:'paypal',label:'PayPal',icon:'PP',cls:'paypal',link:v=>v.includes('@')?`https://paypal.me/${v.replace('@','')}`:(v.startsWith('http')?v:`https://paypal.me/${v}`)},
     {key:'venmo',label:'Venmo',icon:'V',cls:'venmo',link:v=>`https://venmo.com/${v.replace('@','')}`},
-    {key:'cashapp',label:'Cash App',icon:'$',cls:'cashapp',link:v=>`https://cash.app/${v.startsWith('$')?v:'$'+v}`},
-    {key:'stripe',label:'Card / Stripe',icon:'♡',cls:'stripe',link:v=>v},
   ];
   let any=false;
   items.forEach(item=>{
@@ -1028,8 +1028,8 @@ function saveTipLinks(){
   tipLinks={
     paypal:document.getElementById('t-paypal').value.trim(),
     venmo:document.getElementById('t-venmo').value.trim(),
-    cashapp:document.getElementById('t-cashapp').value.trim(),
-    stripe:document.getElementById('t-stripe').value.trim(),
+    cashapp:'',
+    stripe:'',
   };
   localStorage.setItem('tyf_tips',JSON.stringify(tipLinks));
   toast('Tip links saved.');
@@ -1038,8 +1038,6 @@ function saveTipLinks(){
 function loadTipForm(){
   document.getElementById('t-paypal').value=tipLinks.paypal||'';
   document.getElementById('t-venmo').value=tipLinks.venmo||'';
-  document.getElementById('t-cashapp').value=tipLinks.cashapp||'';
-  document.getElementById('t-stripe').value=tipLinks.stripe||'';
 }
 
 /* ══════════════════════════════════════
@@ -1203,10 +1201,27 @@ function deletePremiere(id){
 }
 
 /* COMMENTS */
+let comDirty=false;
+function markComDirty(){
+  comDirty=true;
+  const btn=document.getElementById('com-save-btn');
+  if(btn){btn.style.opacity='1';btn.style.pointerEvents='auto';}
+  const msg=document.getElementById('com-save-msg');
+  if(msg) msg.textContent='Unsaved changes';
+}
+function saveComments(){
+  saveCom(); comDirty=false;
+  const btn=document.getElementById('com-save-btn');
+  if(btn){btn.style.opacity='.4';btn.style.pointerEvents='none';}
+  const msg=document.getElementById('com-save-msg');
+  if(msg){msg.style.color='var(--gold)';msg.textContent='Comments saved!';setTimeout(()=>{msg.textContent='';msg.style.color='var(--text-dim)';},2400);}
+  toast('Comments saved to localStorage.');
+}
+
 function addComment(){
   const t=document.getElementById('c-txt').value.trim(), a=document.getElementById('c-auth').value.trim()||'@fan';
   if(!t){toast('Comment text required.');return;}
-  comments.push({id:nid++,text:t,author:a});renderComments();buildTicker();saveCom();
+  comments.push({id:nid++,text:t,author:a});renderComments();buildTicker();markComDirty();
   document.getElementById('c-txt').value='';document.getElementById('c-auth').value='';
   toast('Comment added to ticker.');
 }
@@ -1223,11 +1238,11 @@ function renderComments(){
     d.addEventListener('dragleave',()=>d.classList.remove('over'));
     d.addEventListener('drop',e=>{e.preventDefault();d.classList.remove('over');
       if(dtype!=='cm'||dsrc===i)return;
-      const mv=comments.splice(dsrc,1)[0];comments.splice(i,0,mv);renderComments();buildTicker();saveCom();});
+      const mv=comments.splice(dsrc,1)[0];comments.splice(i,0,mv);renderComments();buildTicker();markComDirty();});
     c.appendChild(d);
   });
 }
-function delComment(i){comments.splice(i,1);renderComments();buildTicker();saveCom();toast('Comment removed.');}
+function delComment(i){comments.splice(i,1);renderComments();buildTicker();markComDirty();toast('Comment removed.');}
 
 /* SETTINGS */
 function setSetting(k,btn){
